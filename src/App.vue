@@ -1,6 +1,6 @@
 <template>
   <div>
-    112
+    <router-link to="#">123</router-link>
   </div>
 </template>
 
