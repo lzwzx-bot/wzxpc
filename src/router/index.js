@@ -1,5 +1,6 @@
 import Vue from "vue"
-
+// 导入组件
+import login from "../views/login/login.vue"
 // 导入 vue-router
 import VueRouter from 'vue-router'
 //注册 vue-router
@@ -9,7 +10,8 @@ const router = new VueRouter({
 //这里就是路由的配制项
 routes: [
  {
-     path:'/'
+     path:'/login',
+     component:login
  }
   ]
 })
