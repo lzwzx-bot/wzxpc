@@ -1,6 +1,6 @@
 import Vue from "vue"
 // 导入组件
-import login from "../views/login/login.vue"
+import login from "../views/login/index.vue"
 // 导入 vue-router
 import VueRouter from 'vue-router'
 //注册 vue-router
