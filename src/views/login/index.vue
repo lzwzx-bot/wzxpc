@@ -10,32 +10,32 @@
         <span class="right-title">用户登录</span>
       </div>
       <!-- 表单模块 -->
-      <el-form class="form-box" label-width="43px">
-        <el-form-item>
-          <el-input prefix-icon="el-icon-user" placeholder="请输入手机号码"></el-input>
+      <el-form class="form-box" label-width="43px" :rules="rules" :model="form" ref="form">
+        <el-form-item prop="phone">
+          <el-input prefix-icon="el-icon-user" placeholder="请输入手机号码" v-model="form.phone"></el-input>
         </el-form-item>
-        <el-form-item>
-          <el-input show-password prefix-icon="el-icon-lock" placeholder="请输入密码"></el-input>
+        <el-form-item prop="password">
+          <el-input show-password prefix-icon="el-icon-lock" placeholder="请输入密码" v-model="form.password"></el-input>
         </el-form-item>
-        <el-form-item>
+        <el-form-item prop="code">
           <el-row>
             <el-col :span="17">
-              <el-input show-password prefix-icon="el-icon-key" placeholder="请输入验证码"></el-input>
+              <el-input show-password prefix-icon="el-icon-key" placeholder="请输入验证码" v-model="form.code"></el-input>
             </el-col>
             <el-col :span="7">
-              <img src="./img/login_captcha.png" alt class="img" />
+              <img src="./img/login_captcha.png" alt class="img"/>
             </el-col>
           </el-row>
         </el-form-item>
-        <el-form-item>
-          <el-checkbox v-model="checked">
+        <el-form-item prop="checked">
+          <el-checkbox v-model="form.checked">
             我已阅读并同意
             <el-link type="primary">用户协议</el-link>和
             <el-link type="primary">隐私条款</el-link>
           </el-checkbox>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary">登录</el-button>
+          <el-button type="primary" @click="btnClick">登录</el-button>
           <el-button type="primary">注册</el-button>
         </el-form-item>
       </el-form>
@@ -45,7 +45,41 @@
 </template>
 
 <script>
-export default {};
+export default {
+  data() {
+    return {
+      form:{
+        phone:"",
+        password:"",
+        code:"",
+        checked:false
+      },
+      rules:{
+        phone:[
+          { required: true, message: '请输入手机号码', trigger: 'blur' },
+        ],
+        password:[
+          { required: true, message: '请输入密码', trigger: 'blur' },
+        ],
+        code:[
+           { required: true, message: '请输入验证码', trigger: 'blur' },
+        ],
+        checked:[
+          { pattern:/true/, message: '请输入验证码', trigger: 'change' },
+        ]
+      }
+    }
+  },
+  methods: {
+    btnClick(){
+      this.$refs.form.validate(v=>{
+        if(v){
+          alert('全部验证通过')
+        }
+      })
+    }
+  },
+};
 </script>
 
 <style lang="less">
@@ -104,6 +138,7 @@ export default {};
     .img {
       width: 100%;
       height: 42px;
+      vertical-align: middle;
     }
     .el-checkbox {
       display: flex;
