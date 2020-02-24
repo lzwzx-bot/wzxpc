@@ -23,7 +23,7 @@
               <el-input show-password prefix-icon="el-icon-key" placeholder="请输入验证码" v-model="form.code"></el-input>
             </el-col>
             <el-col :span="7">
-              <img src="./img/login_captcha.png" alt class="img"/>
+              <img :src="picUrl" alt class="img" @click="imgClick"/>
             </el-col>
           </el-row>
         </el-form-item>
@@ -36,18 +36,28 @@
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="btnClick">登录</el-button>
-          <el-button type="primary">注册</el-button>
+          <el-button type="primary" @click="regClick">注册</el-button>
         </el-form-item>
       </el-form>
     </div>
+    <!-- 右侧图片 -->
     <img src="./img/login_banner_ele.png" alt />
+    <!-- 注册框 -->
+    <reg ref="reg"></reg>
   </div>
 </template>
 
 <script>
+import reg from './components/register.vue'
+import {login} from "../../api/login.js"
+import {setToken} from "../../utilis/token.js"
 export default {
+  components:{
+    reg
+  },
   data() {
     return {
+      picUrl:process.env.VUE_APP_URL+'/captcha?type=login',
       form:{
         phone:"",
         password:"",
@@ -65,18 +75,39 @@ export default {
            { required: true, message: '请输入验证码', trigger: 'blur' },
         ],
         checked:[
-          { pattern:/true/, message: '请输入验证码', trigger: 'change' },
+          { pattern:/true/, message: '必须勾选同意', trigger: 'change' },
         ]
       }
     }
   },
   methods: {
+    imgClick(){
+      this.picUrl=process.env.VUE_APP_URL+'/captcha?type=login&t='+Date.now();
+    },
     btnClick(){
       this.$refs.form.validate(v=>{
         if(v){
-          alert('全部验证通过')
+          login({
+            phone:this.form.phone,
+            password:this.form.password,
+            code:this.form.code
+          }).then(res=>{
+            window.console.log(res)
+            if(res.data.code==200){
+              this.$message.success('登录成功')
+              //存入token
+              // window.localStorage.setItem("token",res.data.data.token);
+              setToken(res.data.data.token);
+              this.$router.push('/index')
+            }else{
+              this.$message.error(res.data.message);
+            }
+          })
         }
       })
+    },
+    regClick(){
+        this.$refs.reg.dialogFormVisible=true;
     }
   },
 };
@@ -86,11 +117,7 @@ export default {
 .login-wrap {
   width: 100%;
   height: 100%;
-  background: linear-gradient(
-    225deg,
-    rgba(20, 147, 250, 1),
-    rgba(1, 198, 250, 1)
-  );
+  background: linear-gradient(225deg,rgba(20, 147, 250, 1),rgba(1, 198, 250, 1));
   //该div的子元素是弹性布局
   display: flex;
   //设置主轴的对齐方式
